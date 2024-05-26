@@ -2,12 +2,16 @@ var express = require('express');
 var app = express();
 
 // memory setup
-app.use(express.json({ limit: '100mb' }));
-app.use(express.urlencoded({ limit: '100mb', extended: true }));
+app.use(express.json({ limit: '1000mb' }));
+app.use(express.urlencoded({ limit: '1000mb', extended: true }));
 
 // parser setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// cors setup
+const cors = require('cors');
+app.use(cors());
 
 // storage setup
 const multer = require('multer');
