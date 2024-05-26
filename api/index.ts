@@ -96,7 +96,8 @@ app.post('/getFile', async (req, res) => {
   let file;
 
   file = await drive.files.get({
-    fileId: fileId
+    fileId: fileId,
+    alt: 'media'
   }).catch(err => console.log(err)) || [];
 
   res.send(file);
