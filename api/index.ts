@@ -179,14 +179,16 @@ app.post('/post', upload.any(), async (req, res) => {
 })
 
 app.post('/updateComment', async (req, res) => {
-  const { fileId, comment } = req.body;
+  const { fileId, comments, comment } = req.body;
   let updateComment = true;
+
+  const string = [ ...comments, comment ].join('\n\n');
 
   await drive.files.update({
     fileId: `${fileId}`,
     media: {
       mimeType: 'text/plain',
-      body: comment
+      body: string
     },
     fileds: 'id, name'
   }).catch(() => updateComment = false);
