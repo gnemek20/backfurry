@@ -96,8 +96,7 @@ app.post('/getFile', async (req, res) => {
   let file;
 
   file = await drive.files.get({
-    fileId: fileId,
-    alt: 'media'
+    fileId: fileId
   }).catch(err => console.log(err)) || [];
 
   res.send(file);
@@ -124,6 +123,7 @@ app.post('/post', upload.any(), async (req, res) => {
 
   let postFiles = true;
   let postContent = true;
+  let postComment = true;
 
   for (let file of files) {
     const bufferStream = new stream.PassThrough();
@@ -139,7 +139,7 @@ app.post('/post', upload.any(), async (req, res) => {
         parents: [`${id}`]
       },
       fields: 'id, name'
-    }).catch(() => postFiles = false) || [];
+    }).catch(() => postFiles = false);
   }
 
   if (postFiles) {
@@ -153,15 +153,48 @@ app.post('/post', upload.any(), async (req, res) => {
         parents: [`${id}`]
       },
       fields: 'id, name'
-    }).catch(() => postContent = false) || [];
+    }).catch(() => postContent = false);
+
+    await drive.files.create({
+      media: {
+        mimeType: 'text/plain',
+        body: ''
+      },
+      requestBody: {
+        name: 'comments.txt',
+        parents: [`${id}`]
+      },
+      fileds: 'id, name'
+    }).catch(() => postComment = false);
   }
 
-  if (postFiles && postContent) {
+  if (postFiles && postContent && postComment) {
     res.send('Success');
   }
   else {
-    console.log(postFiles, postContent);
+    console.log(postFiles, postContent, postComment);
     res.send('Failed');
+  }
+})
+
+app.post('/upadteComment', async (req, res) => {
+  const { fileId, comment } = req.body;
+  let updateComment = true;
+
+  await drive.files.update({
+    fileId: `${fileId}`,
+    media: {
+      mimeType: 'text/plain',
+      body: comment
+    },
+    fileds: 'id, name'
+  }).catch(() => updateComment = false);
+
+  if (updateComment) {
+    res.send('Success');
+  }
+  else {
+    res.status(500).send('Failed');
   }
 })
 
