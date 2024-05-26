@@ -177,7 +177,7 @@ app.post('/post', upload.any(), async (req, res) => {
   }
 })
 
-app.post('/upadteComment', async (req, res) => {
+app.post('/updateComment', async (req, res) => {
   const { fileId, comment } = req.body;
   let updateComment = true;
 
