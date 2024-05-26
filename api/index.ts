@@ -31,6 +31,10 @@ const drive = google.drive({ version: 'v3', auth });
 const directory = '1QVIIvxHWTfzyHXQ1SEfRdK9XiutbfDII';
 
 // get methods
+app.get('/', (req, res) => {
+  res.send('Back Furry! Why You on Here?');
+})
+
 app.get('/list', async (req, res) => {
   const { data } = await drive.files.list();
   res.send(data.files);
